@@ -1,0 +1,1261 @@
+#:import label kivy.uix.label
+
+BoxLayout:
+    orientation: 'vertical'
+    id: main_layout
+
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    ScreenManager:
+        id: screen_manager
+        Screen:
+            id: choose_directories_screen
+            name: 'choose_directories'
+            manager: 'screen_manager'
+
+            BoxLayout:
+                orientation: 'horizontal'
+
+                Widget:
+                    size_hint_x: None
+                    width: 75
+
+                BoxLayout:
+                    orientation: 'vertical'
+
+                    # Top padding
+                    Widget:
+                        size_hint_y: None
+                        height: 50
+
+                    # Application heading
+                    Label:
+                        text: '[color=3C3C3C][size=26][b]Styrella[/b][/size][size=16]\nStylistic Relationships in Latin[/size][/color]'
+                        halign: 'center'
+                        markup: True
+
+                    # Additional padding
+                    Widget:
+                        size_hint_y: None
+                        height: 40
+
+                    # Corpus directory
+                    BoxLayout:
+                        orientation: 'vertical'
+
+                        Label:
+                            text: 'Corpus directory:'
+                            color: .23, .23, .23, 1
+                            size_hint_y: None
+                            height: 30
+                            halign: 'left'
+
+                        BoxLayout:
+                            orientation: 'horizontal'
+
+                            TextInput:
+                                id: corpus_dir_input
+                                text: 'Choose directory'
+                                foreground_color: .23, .23, .23, 1
+                                size_hint_y: None
+                                height: 30
+
+                            # Small spacing
+                            Widget:
+                                size_hint_x: None
+                                width: 10
+
+                            Button:
+                                text: 'Choose'
+                                size_hint: None, None
+                                width: 85
+                                height: 30
+                                background_normal: ''
+                                background_color: .85, .85, .85, 1
+                                color: .23, .23, .23, 1
+                                on_press: app.do_choose_corpus_dir()
+                        Widget:
+
+
+                    # Output directory
+                    BoxLayout:
+                        orientation: 'vertical'
+
+                        Label:
+                            text: 'Output directory:'
+                            color: .23, .23, .23, 1
+                            size_hint_y: None
+                            height: 30
+
+                        BoxLayout:
+                            orientation: 'horizontal'
+
+                            TextInput:
+                                id: output_dir_input
+                                text: 'Choose directory'
+                                foreground_color: .23, .23, .23, 1
+                                size_hint_y: None
+                                height: 30
+
+                            # Small spacing
+                            Widget:
+                                size_hint_x: None
+                                width: 10
+
+                            Button:
+                                text: 'Choose'
+                                size_hint: None, None
+                                width: 85
+                                height: 30
+                                background_normal: ''
+                                background_color: .85, .85, .85, 1
+                                color: .23, .23, .23, 1
+
+                                on_press: app.do_choose_output_dir()
+                        Widget:
+
+
+
+                    # Bottom padding
+                    Widget:
+                        size_hint_y: None
+                        height: 50
+
+                Widget:
+                    size_hint_x: None
+                    width: 75
+
+        Screen:
+            id: choose_mode_screen
+            name: 'choose_mode'
+            manager: 'screen_manager'
+
+            BoxLayout:
+                orientation: 'horizontal'
+
+                Widget:
+
+                BoxLayout:
+                    orientation: 'vertical'
+
+
+                    # Top padding
+                    Widget:
+                        size_hint_y: None
+                        height: 67
+
+                    # Application heading
+                    Label:
+                        text: '[color=3C3C3C][size=26][b]Styrella[/b][/size][size=16]\nStylistic Relationships in Latin[/size][/color]'
+                        halign: 'center'
+                        markup: True
+
+                    # Additional padding
+                    Widget:
+                        size_hint_y: None
+                        height: 85
+
+                    Button:
+                        text: 'Auto'
+                        font_size: 20
+                        bold: True
+
+                        size_hint_y: None
+                        height: 70
+
+                        background_normal: ''
+                        background_color: .85, .85, .85, 1
+                        color: .23, .23, .23, 1
+                        background_down: '#B4B4B4'
+                        on_press: app.do_auto()
+
+                    Widget:
+                        size_hint_y: None
+                        height: 40
+
+                    Button:
+                        text: 'Manual'
+                        size_hint: None, None
+                        height: 45
+                        width: 95
+                        pos_hint: {'center_x': 0.5}
+
+                        background_normal: ''
+                        background_color: .85, .85, .85, 1
+                        color: .23, .23, .23, 1
+                        background_down: '#B4B4B4'
+                        on_press: app.do_manual()
+
+                    Widget:
+
+                Widget:
+
+        Screen:
+            id: choose_methods_screen
+            name: 'choose_methods'
+            manager: 'screen_manager'
+
+            BoxLayout:
+                orientation: 'horizontal'
+
+                Widget:
+
+                BoxLayout:
+                    orientation: 'vertical'
+
+                    # Top padding
+                    Widget:
+                        size_hint_y: None
+                        height: 64
+
+                    # Application heading
+                    Label:
+                        text: '[color=3C3C3C][size=26][b]Styrella[/b][/size][size=16]\nStylistic Relationships in Latin[/size][/color]'
+                        halign: 'center'
+                        markup: True
+
+                    # Additional padding
+                    Widget:
+                        size_hint_y: None
+                        height: 85
+
+                    Label:
+                        text: '[color=3C3C3C][b]Choose methods:[/b][/color]'
+                        markup: True
+
+                    GridLayout:
+                        id: methods_layout
+                        name: 'methods'
+
+                        cols: 2
+
+                        Label:
+                            text: 'Function words'
+                            color: .23, .23, .23, 1
+                        CheckBox:
+                            name: 'function_words'
+                            id: checkbox_function_words
+                            active: True
+
+                        Label:
+                            text: 'Character n-grams'
+                            color: .23, .23, .23, 1
+                        CheckBox:
+                            name: 'ngrams'
+                            id: checkbox_ngrams
+                            active: True
+
+                        Label:
+                            text: 'Burrows\' Delta'
+                            color: .23, .23, .23, 1
+                        CheckBox:
+                            name: 'delta'
+                            id: checkbox_delta
+                            active: True
+
+                    Widget:
+
+                Widget:
+
+        Screen:
+            id: function_words_choose_features_screen
+            name: 'function_words_choose_features'
+            manager: 'screen_manager'
+
+            BoxLayout:
+                orientation: 'vertical'
+
+                Widget:
+                    size_hint_y: None
+                    height: 50
+
+
+                Label:
+                    text: '[size=18][b]Function words[/b]: Choose features[/size]'
+                    markup: True
+                    color: .23, .23, .23, 1
+                    size_hint_y: None
+                    size: self.texture_size
+                    #text_size: self.size
+                    #valign: 'middle'
+
+                Widget:
+                    size_hint_y: None
+                    height: 35
+
+
+                GridLayout:
+                    id: features_layout
+                    name: 'features'
+
+                    cols: 4
+
+                    Label:
+                        text: '"alius"'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '"antequam"'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: 'Conditional clauses'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: 'Conjunctions'
+                        color: .23, .23, .23, 1
+                    CheckBox:
+                        name: 'alius'
+                        id: checkbox_alius
+                        active: True
+                    CheckBox:
+                        name: 'checkbox_antquam'
+                        id: checkbox_antequam
+                        active: True
+                    CheckBox:
+                        name: 'checkbox_conditional_clauses'
+                        id: checkbox_conditional
+                        active: True
+                    CheckBox:
+                        name: 'checkbox_conjunctions'
+                        id: checkbox_conjunctions
+                        active: True
+
+                    Label:
+                        text: 'cum clauses'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: 'Demonstrative pronouns'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '"dum"'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: 'Gerunds'
+                        color: .23, .23, .23, 1
+                    CheckBox:
+                        active: True
+                        id: checkbox_cum
+                    CheckBox:
+                        active: True
+                        id: checkbox_demonstrative
+                    CheckBox:
+                        active: True
+                        id: checkbox_dum
+                    CheckBox:
+                        active: True
+                        id: checkbox_gerunds
+
+                    Label:
+                        text: '"idem"'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: 'Indefinite clauses'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '"ipse"'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '"iste"'
+                        color: .23, .23, .23, 1
+                    CheckBox:
+                        active: True
+                        id: checkbox_idem
+                    CheckBox:
+                        active: True
+                        id: checkbox_indefinite
+                    CheckBox:
+                        active: True
+                        id: checkbox_ipse
+                    CheckBox:
+                        active: True
+                        id: checkbox_iste
+
+                    Label:
+                        text: 'Personal pronouns'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '"priusquam"'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '"quidam"'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '"quin"'
+                        color: .23, .23, .23, 1
+                    CheckBox:
+                        active: True
+                        id: checkbox_personal
+                    CheckBox:
+                        active: True
+                        id: checkbox_priusquam
+                    CheckBox:
+                        active: True
+                        id: checkbox_quidam
+                    CheckBox:
+                        active: True
+                        id: checkbox_quin
+
+
+                    Label:
+                        text: 'Reflexive pronouns'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: 'Relative pronouns'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: 'Superlatives'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '"ut"'
+                        color: .23, .23, .23, 1
+
+                    CheckBox:
+                        active: True
+                        id: checkbox_reflexive
+                    CheckBox:
+                        active: True
+                        id: checkbox_relative
+                    CheckBox:
+                        active: True
+                        id: checkbox_superlatives
+                    CheckBox:
+                        active: True
+                        id: checkbox_ut
+
+
+        Screen:
+            id: function_words_choose_distance_measure_screen
+            name: 'function_words_choose_distance_measure'
+            manager: 'screen_manager'
+
+            BoxLayout:
+                orientation: 'vertical'
+
+                Widget:
+                    size_hint_y: None
+                    height: 50
+
+
+                Label:
+                    text: '[size=18][b]Function words[/b]: Choose distance measure[/size]'
+                    markup: True
+                    color: .23, .23, .23, 1
+                    size_hint_y: None
+                    size: self.texture_size
+                    #text_size: self.size
+                    #valign: 'middle'
+
+                Widget:
+                    size_hint_y: None
+                    height: 35
+
+                GridLayout:
+                    cols: 3
+
+                    Label:
+                        text: 'Square euclidean'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: 'Euclidean'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: 'Manhattan'
+                        color: .23, .23, .23, 1
+
+                    CheckBox:
+                        group: 'function_words_dist'
+                        allow_no_selection: False
+                        active: True
+                        id: function_words_square_euclidean
+                    CheckBox:
+                        group: 'function_words_dist'
+                        allow_no_selection: False
+                        active: False
+                        id: function_words_euclidean
+                    CheckBox:
+                        group: 'function_words_dist'
+                        allow_no_selection: False
+                        active: False
+                        id: function_words_manhattan
+
+                    Label:
+                        text: 'Tanimoto'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: 'Matusita'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: 'Clark'
+                        color: .23, .23, .23, 1
+
+                    CheckBox:
+                        group: 'function_words_dist'
+                        allow_no_selection: False
+                        active: False
+                        id: function_words_tanimoto
+                    CheckBox:
+                        group: 'function_words_dist'
+                        allow_no_selection: False
+                        active: False
+                        id: function_words_matusita
+                    CheckBox:
+                        group: 'function_words_dist'
+                        allow_no_selection: False
+                        active: False
+                        id: function_words_clark
+
+                    Label:
+                        text: 'Cosine'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: 'JDivergence'
+                        color: .23, .23, .23, 1
+                    Widget:
+
+                    CheckBox:
+                        group: 'function_words_dist'
+                        allow_no_selection: False
+                        active: False
+                        id: function_words_cosine
+                    CheckBox:
+                        group: 'function_words_dist'
+                        allow_no_selection: False
+                        active: False
+                        id: function_words_jdivergence
+                    Widget:
+
+        Screen:
+            id: ngrams_choose_n_screen
+            name: 'ngrams_choose_n'
+            manager: 'screen_manager'
+
+            BoxLayout:
+                orientation: 'vertical'
+
+                Widget:
+                    size_hint_y: None
+                    height: 50
+
+
+                Label:
+                    text: '[size=18][b]N-Grams[/b]: Choose n[/size]'
+                    markup: True
+                    color: .23, .23, .23, 1
+                    size_hint_y: None
+                    size: self.texture_size
+                    #text_size: self.size
+                    #valign: 'middle'
+
+                Widget:
+                    size_hint_y: None
+                    height: 35
+
+                GridLayout:
+                    cols: 4
+
+                    Label:
+                        text: '2-grams'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '3-grams'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '4-grams'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '5-grams'
+                        color: .23, .23, .23, 1
+
+                    CheckBox:
+                        group: 'ngrams_n'
+                        allow_no_selection: False
+                        id: checkbox_2grams
+                        active: True
+                    CheckBox:
+                        group: 'ngrams_n'
+                        allow_no_selection: False
+                        id: checkbox_3grams
+                    CheckBox:
+                        group: 'ngrams_n'
+                        allow_no_selection: False
+                        id: checkbox_4grams
+                    CheckBox:
+                        group: 'ngrams_n'
+                        allow_no_selection: False
+                        id: checkbox_5grams
+
+                    Label:
+                        text: '6-grams'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '7-grams'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '8-grams'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '9-grams'
+                        color: .23, .23, .23, 1
+
+                    CheckBox:
+                        group: 'ngrams_n'
+                        allow_no_selection: False
+                        id: checkbox_6grams
+                    CheckBox:
+                        group: 'ngrams_n'
+                        allow_no_selection: False
+                        id: checkbox_7grams
+                    CheckBox:
+                        group: 'ngrams_n'
+                        allow_no_selection: False
+                        id: checkbox_8grams
+                    CheckBox:
+                        group: 'ngrams_n'
+                        allow_no_selection: False
+                        id: checkbox_9grams
+
+                    Label:
+                        text: '10-grams'
+                        color: .23, .23, .23, 1
+                    Widget:
+                    Widget:
+                    Widget:
+
+                    CheckBox:
+                        group: 'ngrams_n'
+                        allow_no_selection: False
+                        id: checkbox_10grams
+                    Widget:
+                    Widget:
+                    Widget:
+
+        Screen:
+            id: ngrams_choose_most_common_ngrams_screen
+            name: 'ngrams_choose_most_common_ngrams'
+            manager: 'screen_manager'
+
+            BoxLayout:
+                orientation: 'vertical'
+
+                Widget:
+                    size_hint_y: None
+                    height: 50
+
+
+                Label:
+                    text: '[size=18][b]N-Grams[/b]: Choose most common n-grams[/size]'
+                    markup: True
+                    color: .23, .23, .23, 1
+                    size_hint_y: None
+                    size: self.texture_size
+                    #text_size: self.size
+                    #valign: 'middle'
+
+                Widget:
+                    size_hint_y: None
+                    height: 35
+
+
+                GridLayout:
+                    cols: 4
+
+                    Label:
+                        text: '50'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '100'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '200'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '300'
+                        color: .23, .23, .23, 1
+
+                    CheckBox:
+                        group: 'ngrams_most_common_ngrams'
+                        allow_no_selection: False
+                        active: True
+                        id: checkbox_ngrams_50
+                    CheckBox:
+                        group: 'ngrams_most_common_ngrams'
+                        allow_no_selection: False
+                        active: False
+                        id: checkbox_ngrams_100
+                    CheckBox:
+                        group: 'ngrams_most_common_ngrams'
+                        allow_no_selection: False
+                        active: False
+                        id: checkbox_ngrams_200
+                    CheckBox:
+                        group: 'ngrams_most_common_ngrams'
+                        allow_no_selection: False
+                        active: False
+                        id: checkbox_ngrams_300
+
+
+                    Label:
+                        text: '400'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '500'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '1000'
+                        color: .23, .23, .23, 1
+                    Widget:
+
+
+
+                    CheckBox:
+                        group: 'ngrams_most_common_ngrams'
+                        allow_no_selection: False
+                        active: False
+                        id: checkbox_ngrams_400
+                    CheckBox:
+                        group: 'ngrams_most_common_ngrams'
+                        allow_no_selection: False
+                        active: False
+                        id: checkbox_ngrams_500
+                    CheckBox:
+                        group: 'ngrams_most_common_ngrams'
+                        allow_no_selection: False
+                        active: False
+                        id: checkbox_ngrams_1000
+                    Widget:
+
+                Widget:
+
+
+        Screen:
+            id: ngrams_choose_distance_measure_screen
+            name: 'ngrams_choose_distance_measure'
+            manager: 'screen_manager'
+
+            BoxLayout:
+                orientation: 'vertical'
+
+                Widget:
+                    size_hint_y: None
+                    height: 50
+
+
+                Label:
+                    text: '[size=18][b]N-Grams[/b]: Choose distance measure[/size]'
+                    markup: True
+                    color: .23, .23, .23, 1
+                    size_hint_y: None
+                    size: self.texture_size
+                    #text_size: self.size
+                    #valign: 'middle'
+
+                Widget:
+                    size_hint_y: None
+                    height: 35
+
+                GridLayout:
+                    cols: 3
+
+                    Label:
+                        text: 'Square euclidean'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: 'Euclidean'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: 'Manhattan'
+                        color: .23, .23, .23, 1
+
+                    CheckBox:
+                        group: 'ngrams_dist'
+                        allow_no_selection: False
+                        active: True
+                        id: ngrams_square_euclidean
+                    CheckBox:
+                        group: 'ngrams_dist'
+                        allow_no_selection: False
+                        active: False
+                        id: ngrams_euclidean
+                    CheckBox:
+                        group: 'ngrams_dist'
+                        allow_no_selection: False
+                        active: False
+                        id: ngrams_manhattan
+
+                    Label:
+                        text: 'Tanimoto'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: 'Matusita'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: 'Clark'
+                        color: .23, .23, .23, 1
+
+                    CheckBox:
+                        group: 'ngrams_dist'
+                        allow_no_selection: False
+                        active: False
+                        id: ngrams_tanimoto
+                    CheckBox:
+                        group: 'ngrams_dist'
+                        allow_no_selection: False
+                        active: False
+                        id: ngrams_matusita
+                    CheckBox:
+                        group: 'ngrams_dist'
+                        allow_no_selection: False
+                        active: False
+                        id: ngrams_clark
+
+                    Label:
+                        text: 'Cosine'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: 'JDivergence'
+                        color: .23, .23, .23, 1
+                    Widget:
+
+                    CheckBox:
+                        group: 'ngrams_dist'
+                        allow_no_selection: False
+                        active: False
+                        id: ngrams_cosine
+                    CheckBox:
+                        group: 'ngrams_dist'
+                        allow_no_selection: False
+                        active: False
+                        id: ngrams_jdivergence
+                    Widget:
+            Widget:
+
+
+        Screen:
+            id: delta_choose_most_frequent_words_screen
+            name: 'delta_choose_most_frequent_words'
+            manager: 'screen_manager'
+
+            BoxLayout:
+                orientation: 'vertical'
+
+                Widget:
+                    size_hint_y: None
+                    height: 50
+
+
+                Label:
+                    text: '[size=18][b]Burrows\' Delta[/b]: Choose most frequent words[/size]'
+                    markup: True
+                    color: .23, .23, .23, 1
+                    size_hint_y: None
+                    size: self.texture_size
+                    #text_size: self.size
+                    #valign: 'middle'
+
+                Widget:
+                    size_hint_y: None
+                    height: 35
+
+                GridLayout:
+                    cols: 4
+
+                    Label:
+                        text: '50'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '100'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '150'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '200'
+                        color: .23, .23, .23, 1
+
+                    CheckBox:
+                        group: 'delta_most_frequent_words'
+                        allow_no_selection: False
+                        active: True
+                        id: delta_mfw_50
+                    CheckBox:
+                        group: 'delta_most_frequent_words'
+                        allow_no_selection: False
+                        active: False
+                        id: delta_mfw_100
+                    CheckBox:
+                        group: 'delta_most_frequent_words'
+                        allow_no_selection: False
+                        active: False
+                        id: delta_mfw_150
+                    CheckBox:
+                        group: 'delta_most_frequent_words'
+                        allow_no_selection: False
+                        active: False
+                        id: delta_mfw_200
+
+
+                    Label:
+                        text: '250'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '300'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '400'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '500'
+                        color: .23, .23, .23, 1
+
+
+                    CheckBox:
+                        group: 'delta_most_frequent_words'
+                        allow_no_selection: False
+                        active: False
+                        id: delta_mfw_250
+                    CheckBox:
+                        group: 'delta_most_frequent_words'
+                        allow_no_selection: False
+                        active: False
+                        id: delta_mfw_300
+                    CheckBox:
+                        group: 'delta_most_frequent_words'
+                        allow_no_selection: False
+                        active: False
+                        id: delta_mfw_400
+                    CheckBox:
+                        group: 'delta_most_frequent_words'
+                        allow_no_selection: False
+                        active: False
+                        id: delta_mfw_500
+
+                    Label:
+                        text: '600'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '700'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '800'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '900'
+                        color: .23, .23, .23, 1
+
+
+                    CheckBox:
+                        group: 'delta_most_frequent_words'
+                        allow_no_selection: False
+                        active: False
+                        id: delta_mfw_600
+                    CheckBox:
+                        group: 'delta_most_frequent_words'
+                        allow_no_selection: False
+                        active: False
+                        id: delta_mfw_700
+                    CheckBox:
+                        group: 'delta_most_frequent_words'
+                        allow_no_selection: False
+                        active: False
+                        id: delta_mfw_800
+                    CheckBox:
+                        group: 'delta_most_frequent_words'
+                        allow_no_selection: False
+                        active: False
+                        id: delta_mfw_900
+
+                    Label:
+                        text: '1000'
+                        color: .23, .23, .23, 1
+                    Widget:
+                    Widget:
+                    Widget:
+
+                    CheckBox:
+                        group: 'delta_most_frequent_words'
+                        allow_no_selection: False
+                        active: False
+                        id: delta_mfw_1000
+                    Widget:
+                    Widget:
+                    Widget:
+
+        Screen:
+            id: delta_choose_culling_factor_screen
+            name: 'delta_choose_culling_factor'
+            manager: 'screen_manager'
+
+            BoxLayout:
+                orientation: 'vertical'
+
+                Widget:
+                    size_hint_y: None
+                    height: 50
+
+
+                Label:
+                    text: '[size=18][b]Burrows\' Delta[/b]: Choose culling factor[/size]'
+                    markup: True
+                    color: .23, .23, .23, 1
+                    size_hint_y: None
+                    size: self.texture_size
+                    #text_size: self.size
+                    #valign: 'middle'
+
+                Widget:
+                    size_hint_y: None
+                    height: 35
+
+                GridLayout:
+                    cols: 4
+
+                    Label:
+                        text: '0%'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '30%'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '50%'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '70%'
+                        color: .23, .23, .23, 1
+
+                    CheckBox:
+                        group: 'delta_most_frequent_words'
+                        allow_no_selection: False
+                        active: True
+                        id: delta_cull_0
+                    CheckBox:
+                        group: 'delta_most_frequent_words'
+                        allow_no_selection: False
+                        active: False
+                        id: delta_cull_30
+                    CheckBox:
+                        group: 'delta_most_frequent_words'
+                        allow_no_selection: False
+                        active: False
+                        id: delta_cull_50
+                    CheckBox:
+                        group: 'delta_most_frequent_words'
+                        allow_no_selection: False
+                        active: False
+                        id: delta_cull_70
+
+                    Label:
+                        text: '90%'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: '100%'
+                        color: .23, .23, .23, 1
+                    Widget:
+                    Widget:
+
+                    CheckBox:
+                        group: 'delta_most_frequent_words'
+                        allow_no_selection: False
+                        active: False
+                        id: delta_cull_90
+                    CheckBox:
+                        group: 'delta_most_frequent_words'
+                        allow_no_selection: False
+                        active: False
+                        id: delta_cull_100
+                    Widget:
+                    Widget:
+                Widget:
+
+
+
+        Screen:
+            id: delta_choose_delta_measure_screen
+            name: 'delta_choose_delta_measure'
+            manager: 'screen_manager'
+
+            BoxLayout:
+                orientation: 'vertical'
+
+                Widget:
+                    size_hint_y: None
+                    height: 50
+
+
+                Label:
+                    text: '[size=18][b]Burrows\' Delta[/b]: Choose delta measure[/size]'
+                    markup: True
+                    color: .23, .23, .23, 1
+                    size_hint_y: None
+                    size: self.texture_size
+                    #text_size: self.size
+                    #valign: 'middle'
+
+                Widget:
+                    size_hint_y: None
+                    height: 35
+
+                Widget:
+
+                GridLayout:
+                    cols: 4
+
+                    Label:
+                        text: 'Classic'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: 'Eder\'s'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: 'Cosine'
+                        color: .23, .23, .23, 1
+                    Label:
+                        text: 'Argamon\'s'
+                        color: .23, .23, .23, 1
+
+                    CheckBox:
+                        group: 'delta_measure'
+                        allow_no_selection: False
+                        active: True
+                        id: delta_classic
+                    CheckBox:
+                        group: 'delta_measure'
+                        allow_no_selection: False
+                        active: False
+                        id: delta_eders
+                    CheckBox:
+                        group: 'delta_measure'
+                        allow_no_selection: False
+                        active: False
+                        id: delta_cosine
+                    CheckBox:
+                        group: 'delta_measure'
+                        allow_no_selection: False
+                        active: False
+                        id: delta_argamons
+                Widget:
+
+
+
+        Screen:
+            id: progress_screen
+            name: 'progress'
+            manager: 'screen_manager'
+
+            BoxLayout:
+                orientation: 'horizontal'
+
+                Widget:
+                    size_hint_x: None
+                    width: 175
+
+                BoxLayout:
+                    orientation: 'vertical'
+
+                    Widget:
+                        size_hint_y: None
+                        height: 200
+
+                    Label:
+                        id: task_label
+                        text: '...'
+                        color: .23, .23, .23, 1
+
+                        size_hint_y: None
+                        height: 30
+
+                        halign: 'center'
+                        markup: True
+
+                    ProgressBar:
+                        id: task_progress
+                        max: 100
+                        value: 0
+
+                    Widget:
+
+
+                    Label:
+                        text: 'Overall progress:'
+                        color: .23, .23, .23, 1
+
+                        size_hint_y: None
+                        height: 30
+
+                    ProgressBar:
+                        id: overall_progress
+                        max: 100
+                        value: 0
+
+                    Widget:
+
+
+                Widget:
+                    size_hint_x: None
+                    width: 175
+
+        Screen:
+            id: finished_screen
+            name: 'finished'
+            manager: 'screen_manager'
+
+            BoxLayout:
+                orientation: 'horizontal'
+
+                Widget:
+
+                BoxLayout:
+                    orientation: 'vertical'
+
+                    Widget:
+
+                    Image:
+                        source: 'img/check_mark.png'
+                        size: self.texture_size
+
+                    Label:
+                        text: '[size=22]Finished![/size]'
+                        markup: True
+                        color: .23, .23, .23, 1
+                        halign: 'center'
+                    Widget:
+                Widget:
+
+
+
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint: 1, None
+        height: 50
+
+
+
+        Button:
+            id: back_button
+            size_hint: None, 1
+            width: 100
+            color: .9, .9, .9, 1
+            text: '< Back'
+            #disabled: True
+            background_normal: ''
+            background_color: .85, .85, .85, 1
+            background_down: '#B4B4B4'
+
+            on_press: app.do_back()
+
+        Widget:
+
+        Button:
+            id: next_button
+            size_hint: None, 1
+            width: 100
+            color: .23, .23, .23, 1
+            background_normal: ''
+            background_color: .85, .85, .85, 1
+            background_down: '#B4B4B4'
+            text: 'Next >'
+            on_press: app.do_next()
+
