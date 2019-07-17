@@ -1,1 +1,8 @@
 __pycache__
+build
+lib
+pynsist_pkgs
+pynsist_whls
+installer.cfg
+styrella.ico
+main.spec

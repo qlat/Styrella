@@ -58,11 +58,11 @@ def tanimoto(a, b):
     return max(manhattan(a, b) / np.sum(np.maximum(a, b)), 0)
 
 
-def delta(a, b, z_scores_a, z_scores_b):
+def delta(z_scores_a, z_scores_b):
     return np.divide(np.sum(np.fabs(z_scores_a - z_scores_b)), len(z_scores_a))
 
 
-def eders_delta(a, b, z_scores_a, z_scores_b):
+def eders_delta(z_scores_a, z_scores_b):
 
     n = len(z_scores_a)
     n_i = np.arange(n) + 1
@@ -70,7 +70,7 @@ def eders_delta(a, b, z_scores_a, z_scores_b):
     return np.divide(np.sum(np.fabs(z_scores_a - z_scores_b) * ((n - n_i + 1) / n)), n)
 
 
-def delta_cosine(a, b, z_scores_a, z_scores_b):
+def delta_cosine(z_scores_a, z_scores_b):
 
     z_scores_a[z_scores_a == 0] = np.finfo(float).eps
     z_scores_b[z_scores_b == 0] = np.finfo(float).eps
@@ -81,7 +81,7 @@ def delta_cosine(a, b, z_scores_a, z_scores_b):
     return 1 - (num / denom)
 
 
-def argamon(a, b, z_scores_a, z_scores_b):
+def argamon(z_scores_a, z_scores_b):
 
     return (1 / len(z_scores_a)) * np.sqrt(np.sum(np.power(z_scores_a - z_scores_b, 2)))
 

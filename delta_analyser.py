@@ -313,7 +313,8 @@ class DeltaAnalyser:
         for compare_text in texts:
             if not text == compare_text:
 
-                result[compare_text] = measure(texts[text], texts[compare_text], z_scores.loc[text].values, z_scores.loc[compare_text].values)
+                #result[compare_text] = measure(texts[text], texts[compare_text], z_scores.loc[text].values, z_scores.loc[compare_text].values)
+                result[compare_text] = measure(z_scores.loc[text].values, z_scores.loc[compare_text].values)
 
         result = sorted(result.items(), key=lambda x: x[1])
         return result

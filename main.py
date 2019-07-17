@@ -641,6 +641,8 @@ class StyrellaApp(App):
         self.root.ids.next_button.color = (.23, .23, .23, 1)
         self.root.ids.next_button.diabled = False
 
+def main():
+    StyrellaApp().run()
 
 if __name__ == '__main__':
-    StyrellaApp().run()
+    main()
