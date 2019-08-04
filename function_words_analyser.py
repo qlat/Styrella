@@ -59,8 +59,9 @@ class FeatureAnalyser:
     # Possible values: auto, manual
     mode = 'auto'
 
-    # Feature values from each text. Rows: texts; Columns: features; Entries: relative freqs
+    # Feature values from each text. Rows: text names; Columns: features; Entries: relative freqs
     feature_matrix = None
+    # TODO Keys: text names => Make DataFrame
 
     # Adjacency matrix of text distances. Rows/columns: text file names; Entries: Distances
     #distance_matrix = None
@@ -423,7 +424,7 @@ class FeatureAnalyser:
         return result
 
 
-    def get_ranking(self, n_row, matrix, measure):
+    def get_ranking(self, n_row, texts, matrix, measure):
 
         a = {}
 
@@ -432,7 +433,8 @@ class FeatureAnalyser:
 
             if not n_row == row:
                 # Get distance from n_row to current row
-                a[row] = measure(matrix[n_row, :], matrix[row,:])
+                #a[row] = measure(matrix[n_row, :], matrix[row,:])
+                a[texts[row]] = measure(matrix[n_row, :], matrix[row, :])
 
         a_sorted = sorted(a.items(), key=lambda x: x[1])
 
@@ -440,11 +442,11 @@ class FeatureAnalyser:
 
 
 
-    def add_edges(self, graph, label, labels, ranking, weights):
+    def add_edges(self, graph, label, ranking, weights):
 
         # Add edges to first and two runner-ups
         for i in range(len(weights)):
-            link_label = labels[ranking[i][0]]
+            link_label = ranking[i][0]
 
             # Create/increase in degree
             if 'In' in graph.nodes[link_label]:
@@ -452,21 +454,20 @@ class FeatureAnalyser:
             else:
                 graph.nodes[link_label]['In'] = 1
 
-
             if not graph.has_edge(label, link_label):
-                graph.add_edge(label, link_label, weight=weights[i])
+                graph.add_edge(label, link_label)
+                graph[label][link_label]['weight'] = weights[i]
 
                 # Increase out degree only if this is a new edge
                 if 'Out' in graph.nodes[label]:
                     graph.nodes[label]['Out'] += 1
                 else:
                     graph.nodes[label]['Out'] = 1
-
             else:
                 graph[label][link_label]['weight'] += weights[i]
 
 
-    def make_graph(self, feature_matrix, row_labels, selected_features):
+    def make_graph(self, feature_matrix, text_labels, selected_features):
 
         print('Creating graph...')
         self.progress_indicator.set_label('[b]Function words:[/b]\nCreating graph...')
@@ -479,25 +480,27 @@ class FeatureAnalyser:
 
         # Add nodes for all texts forefront
         for i in range(matrix.shape[0]):
-            G.add_node(row_labels[i])
+            G.add_node(text_labels[i])
 
             self.progress_indicator.inc()
 
         # Step 1: Compare selected features at once => strong edge weights
         for i in range(matrix.shape[0]):
 
-            ranking = self.get_ranking(i, matrix, self.distance_measure[1])
+            #ranking = self.get_ranking(i, matrix, self.distance_measure[1])
+            ranking = self.get_ranking(i, text_labels, matrix, self.distance_measure[1])
 
-            self.add_edges(G, row_labels[i], row_labels, ranking, self.strong_edge_weights)
+            self.add_edges(G, text_labels[i], ranking, self.strong_edge_weights)
             self.progress_indicator.inc()
 
 
         # Step 2: Compare all features at once => weak edge weights
         for i in range(feature_matrix.shape[0]):
 
-            ranking = self.get_ranking(i, self.feature_matrix, self.distance_measure[1])
+            #ranking = self.get_ranking(i, self.feature_matrix, self.distance_measure[1])
+            ranking = self.get_ranking(i, text_labels, self.feature_matrix, self.distance_measure[1])
 
-            self.add_edges(G, row_labels[i], row_labels, ranking, self.weak_edge_weights)
+            self.add_edges(G, text_labels[i], ranking, self.weak_edge_weights)
             self.progress_indicator.inc()
 
 

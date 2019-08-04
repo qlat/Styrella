@@ -36,9 +36,7 @@ class NGramAnalyser:
     # N-gram parameters
     mf_ngrams = 200
     ngram_types = [2, 3, 4, 5, 6, 7, 8, 9, 10]
-    #ngram_types = [2, 3]
     mf_ngram_types = [50, 100, 200, 300, 400, 500, 1000]
-    #mf_ngram_types = [50, 100]
 
     ap_matrix = None
     choosen_index = None

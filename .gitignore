@@ -6,3 +6,5 @@ pynsist_whls
 installer.cfg
 styrella.ico
 main.spec
+output
+docs

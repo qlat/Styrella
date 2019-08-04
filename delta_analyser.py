@@ -14,12 +14,10 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 import xlsxwriter
 
+from base_analyzer import *
 import measures
 
-class DeltaAnalyser:
-
-    corpus_reader = None
-    output_dir = ''
+class DeltaAnalyser(BaseAnalyzer):
 
     # Most frequent words in the whole corpus
     corpus_mfw = {}
@@ -45,28 +43,9 @@ class DeltaAnalyser:
 
     workbook = None
 
-    # Possible values: auto, manual
-    mode = 'auto'
-
     measure = ('cosine', measures.delta_measures['cosine'])
     ap_matrix = None
     selected_index = None
-
-    graph = None
-
-    # Progress indicator
-    progress_indicator = None
-
-    progress_max = 0
-
-
-    def __init__(self, corpus_reader, output_dir, mode):
-        self.corpus_reader = corpus_reader
-        self.output_dir = output_dir
-
-        self.mode = mode
-
-        self.progress_max = self.get_progress_max()
 
 
     def get_progress_max(self):
@@ -321,33 +300,6 @@ class DeltaAnalyser:
 
 
 
-    def add_edges(self, graph, label, ranking, weights):
-
-        # Add edges to first and two runner-ups
-        for i in range(len(weights)):
-            link_label = ranking[i][0]
-
-            # Create/increase in degree
-            if 'In' in graph.nodes[link_label]:
-                graph.nodes[link_label]['In'] += 1
-            else:
-                graph.nodes[link_label]['In'] = 1
-
-            if not graph.has_edge(label, link_label):
-                #graph.add_edge(label, link_label, weight=weights[i])
-                graph.add_edge(label, link_label)
-                graph[label][link_label]['weight'] = weights[i]
-
-                # Increase out degree only if this is a new edge
-                if 'Out' in graph.nodes[label]:
-                    graph.nodes[label]['Out'] += 1
-                else:
-                    graph.nodes[label]['Out'] = 1
-            else:
-                graph[label][link_label]['weight'] += weights[i]
-
-
-
     def make_graph(self):
 
         G = nx.DiGraph()
@@ -434,32 +386,9 @@ class DeltaAnalyser:
         return G
 
 
-
-    def precision(self, k, array):
-
-        s = 0
-        for i in range(k):
-            if array[i]:
-                s += 1
-
-        return s / k
-
-
-
-    def average_precision(self, array):
-
-        ap = 0
-        for i in range(len(array)):
-            ap += self.precision(i+1, array) * array[i]
-
-        return ap / len(array)
-
-
-
     def auto_select_parameters(self):
 
         print('Auto-selecting parameters...')
-
 
         # Temporary corpus for testing
         self.progress_indicator.set_label('[b]Burrow\'s Delta:[/b]\nPreparing test corpus...')
