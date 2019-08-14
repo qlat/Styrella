@@ -3,10 +3,10 @@ Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
 import kivy
 
-from function_words_analyser import *
 from corpus_reader import *
-from ngram_analyser import *
 from delta_analyser import *
+from function_words_analyser import *
+from ngram_analyser import *
 
 import os
 import threading
@@ -21,7 +21,6 @@ from tkinter import filedialog
 from tkinter import messagebox
 
 from pathlib import Path
-
 
 class ProgressIndicator:
 
@@ -40,7 +39,7 @@ class ProgressIndicator:
         self.progress_bar.value = 0
         self.progress_bar.max = max
 
-        print('Progress max: ' + str(max))
+        #print('Progress max: ' + str(max))
 
     @mainthread
     def set_label(self, label):
@@ -82,7 +81,6 @@ class StyrellaApp(App):
 
         self.output_dir = Path('output').resolve()
         self.root.ids.output_dir_input.text = self.output_dir.as_posix()
-
 
     def do_choose_corpus_dir(self):
 
@@ -630,7 +628,6 @@ class StyrellaApp(App):
         task.daemon = True
         task.start()
 
-
     def do_manual(self, *args):
 
         print('Do manual mode.')
@@ -641,8 +638,10 @@ class StyrellaApp(App):
         self.root.ids.next_button.color = (.23, .23, .23, 1)
         self.root.ids.next_button.diabled = False
 
+
 def main():
     StyrellaApp().run()
+
 
 if __name__ == '__main__':
     main()

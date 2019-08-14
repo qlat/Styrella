@@ -77,7 +77,6 @@ class DeltaAnalyser(BaseAnalyzer):
 
 
     def get_mfw_in_corpus(self, corpus):
-
         """
         Returns a dictionary of the most frequent words
             in the given corpus.
@@ -159,7 +158,6 @@ class DeltaAnalyser(BaseAnalyzer):
 
 
     def cull_words(self, texts, corpus_word_list, cull_at):
-
         """
         Creates a subset of the words in 'corpus_word_list' that occur at leat
         in 'cull_at' percent of all 'texts'.
@@ -233,7 +231,6 @@ class DeltaAnalyser(BaseAnalyzer):
 
 
     def get_z_scores(self, texts, corpus_words, mfw, cull_at):
-
         """
         Calculates the z-scores for the given texts.
 
@@ -258,7 +255,6 @@ class DeltaAnalyser(BaseAnalyzer):
         matrix = np.zeros((len(texts), true_mfw))
 
         row = 0
-        col = 0
         for text in texts:
 
             col = 0
@@ -291,8 +287,6 @@ class DeltaAnalyser(BaseAnalyzer):
 
         for compare_text in texts:
             if not text == compare_text:
-
-                #result[compare_text] = measure(texts[text], texts[compare_text], z_scores.loc[text].values, z_scores.loc[compare_text].values)
                 result[compare_text] = measure(z_scores.loc[text].values, z_scores.loc[compare_text].values)
 
         result = sorted(result.items(), key=lambda x: x[1])
@@ -331,7 +325,6 @@ class DeltaAnalyser(BaseAnalyzer):
             n_passes += 1
 
             self.progress_indicator.inc()
-
 
 
         # Cycle through settings => weak edge weights
@@ -456,8 +449,6 @@ class DeltaAnalyser(BaseAnalyzer):
 
                     self.progress_indicator.inc()
 
-
-
         print('')
         self.ap_matrix = matrix
 
@@ -466,7 +457,6 @@ class DeltaAnalyser(BaseAnalyzer):
 
         print('AP matrix:')
         print(matrix)
-
 
         print('=> Choose parameters:')
         print('Delta measure: ' + str(measures[choosen_index[0]]))

@@ -14,7 +14,6 @@ class CorpusReader:
     # Number of chunks to split each text into for testing purposes
     n_test_chunks = 3
 
-
     def read_file(self, name):
 
         result = []

@@ -61,10 +61,6 @@ class FeatureAnalyser:
 
     # Feature values from each text. Rows: text names; Columns: features; Entries: relative freqs
     feature_matrix = None
-    # TODO Keys: text names => Make DataFrame
-
-    # Adjacency matrix of text distances. Rows/columns: text file names; Entries: Distances
-    #distance_matrix = None
 
     # Distance matrix with selected features only
     distance_matrix_sel = None
@@ -82,14 +78,12 @@ class FeatureAnalyser:
     # Ranked list of ap values for each distance measure
     ap_list = None
 
-
     # Progress indicator
     progress_indicator = None
     progress_max = 0
 
 
     def __init__(self, corpus_reader, output_dir, mode):
-        #self.corpus = corpus
         self.corpus_reader = corpus_reader
         self.output_dir = output_dir
 
@@ -200,15 +194,10 @@ class FeatureAnalyser:
 
         feature_matrix = np.ones(shape=(n_rows, n_cols))
 
-        #print('Getting ' + str(n_cols) + ' feature values...')
-        #print('Choice: '+str(choice))
-
         len_corpus = len(corpus)
 
         i = 0
         for text in corpus:
-            #print('Text >'+text+'< ('+str(len(corpus[text]))+' words)')
-
             # Index into choice array, usually not the same as k!
             j = 0
             k = 0
@@ -346,13 +335,11 @@ class FeatureAnalyser:
 
     def auto_select_distance_measure(self):
 
-        #self.task_label.text = 'Function words: Selecting distance measure...'
         self.progress_indicator.set_label('[b]Function words:[/b]\nSelecting distance measure...')
 
         # Build test corpus if it does not already exist
         if len(self.corpus_reader.test_corpus) == 0:
             self.corpus_reader.test_corpus = self.build_test_corpus()
-
 
         print('Choosing best distance measure...')
         matrix = self.get_feature_values(self.corpus_reader.test_corpus, [self.feature_choice[x] for x in self.feature_choice])
@@ -433,7 +420,6 @@ class FeatureAnalyser:
 
             if not n_row == row:
                 # Get distance from n_row to current row
-                #a[row] = measure(matrix[n_row, :], matrix[row,:])
                 a[texts[row]] = measure(matrix[n_row, :], matrix[row, :])
 
         a_sorted = sorted(a.items(), key=lambda x: x[1])
@@ -487,7 +473,6 @@ class FeatureAnalyser:
         # Step 1: Compare selected features at once => strong edge weights
         for i in range(matrix.shape[0]):
 
-            #ranking = self.get_ranking(i, matrix, self.distance_measure[1])
             ranking = self.get_ranking(i, text_labels, matrix, self.distance_measure[1])
 
             self.add_edges(G, text_labels[i], ranking, self.strong_edge_weights)
@@ -497,7 +482,6 @@ class FeatureAnalyser:
         # Step 2: Compare all features at once => weak edge weights
         for i in range(feature_matrix.shape[0]):
 
-            #ranking = self.get_ranking(i, self.feature_matrix, self.distance_measure[1])
             ranking = self.get_ranking(i, text_labels, self.feature_matrix, self.distance_measure[1])
 
             self.add_edges(G, text_labels[i], ranking, self.weak_edge_weights)
@@ -538,8 +522,6 @@ class FeatureAnalyser:
                 print('>'+f+'<')
         print('Distance measure: '+self.distance_measure[0])
 
-        #self.distance_matrix = self.make_distance_matrix(self.feature_matrix)
-
         # Make distance matrix for selected features only
         selection = [self.feature_choice[f] for f in self.feature_choice]
         matrix = self.feature_matrix[:, selection]
@@ -559,7 +541,6 @@ class FeatureAnalyser:
         n_row = 0
         n_features = self.feature_matrix.shape[1]
 
-
         # Define format for selected features
         bold = self.workbook.add_format({'bold': True})
         regular = self.workbook.add_format({'bold': False})
@@ -573,7 +554,6 @@ class FeatureAnalyser:
             if selection[i]:
                 formats[i+1] = bold
 
-
         # Write headline
         headline = [''] + [x for x in self.feature_choice]
 
@@ -581,7 +561,6 @@ class FeatureAnalyser:
             worksheet.write(n_row, n_col, headline[n_col], formats[n_col])
 
         n_row += 1
-
 
         # Write values
         texts = [t for t in self.corpus_reader.corpus]
@@ -603,7 +582,6 @@ class FeatureAnalyser:
 
         print('Writing distance values...')
 
-
         worksheet = self.workbook.add_worksheet('Distances')
 
         n_row = 0
@@ -616,7 +594,6 @@ class FeatureAnalyser:
             worksheet.write(n_row, n_col, headline[n_col])
 
         n_row += 1
-
 
         # Write values
         for i in range(n_distances):
@@ -684,7 +661,6 @@ class FeatureAnalyser:
         for p in zip(X, Y, [text for text in self.corpus_reader.corpus]):
             plot.text(p[0]+0.2, p[1]+0.2, p[2], size='8', horizontalalignment='center', verticalalignment='top')
 
-        # plot.set_title('2 component PCA (Delta)', fontsize=14)
         plot.text(x=0.5, y=1.1, s='2 component PCA (function words)', fontsize=14, weight='bold', ha='center', va='bottom',
                   transform=plot.transAxes)
         plot.text(x=0.5, y=1.05,
@@ -738,6 +714,5 @@ class FeatureAnalyser:
 
         with open(self.output_dir / 'function_words_graph.json', 'w') as f:
             json.dump(data, f)
-
 
         print('Finished writing results.')

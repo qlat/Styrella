@@ -70,6 +70,9 @@ class BaseAnalyzer:
     def auto_select_parameters(self):
         raise NotImplementedError("Please Implement this method")
 
+    def get_progress_max(self):
+        raise NotImplementedError("Please Implement this method")
+
     def write_results(self, output_dir):
         raise NotImplementedError("Please Implement this method")
 
