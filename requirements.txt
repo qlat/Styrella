@@ -1,7 +1,14 @@
+docutils
+kivy
+kivy_deps.sdl2==0.1.22
+kivy_deps.glew==0.1.12
 matplotlib
 networkx
 numpy
 pandas
+pygments
+pypiwin32
 seaborn
 sklearn
+tkinter
 xlsxwriter

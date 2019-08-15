@@ -3,12 +3,8 @@ Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
 import kivy
 
-from corpus_reader import *
-from delta_analyser import *
-from function_words_analyser import *
-from ngram_analyser import *
-
 import os
+from pathlib import Path
 import threading
 
 from kivy.app import App
@@ -20,7 +16,11 @@ from tkinter import *
 from tkinter import filedialog
 from tkinter import messagebox
 
-from pathlib import Path
+from corpus_reader import *
+from delta_analyser import *
+from function_words_analyser import *
+from ngram_analyser import *
+
 
 class ProgressIndicator:
 
