@@ -1,8 +1,8 @@
 import collections
+import json
 import math
 import os
 
-import json
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
