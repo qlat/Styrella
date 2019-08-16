@@ -19,11 +19,20 @@ from sklearn.feature_selection import chi2
 from sklearn import preprocessing
 import xlsxwriter
 
+from base_analyzer import *
 import function_words_features
 import measures
 
 
-class FeatureAnalyser:
+class FeatureAnalyser(BaseAnalyzer):
+
+    def auto_select_parameters(self):
+        # TODO
+        pass
+
+    def write_values(self):
+        # TODO
+        pass
 
     feature_choice = {
         'alius': False,
@@ -50,15 +59,6 @@ class FeatureAnalyser:
 
     most_important_features = None
 
-    output_dir = ''
-
-    # Keys: text file names
-    # Values: list of words
-    corpus_reader = None
-
-    # Possible values: auto, manual
-    mode = 'auto'
-
     # Feature values from each text. Rows: text names; Columns: features; Entries: relative freqs
     feature_matrix = None
 
@@ -68,7 +68,7 @@ class FeatureAnalyser:
     # Selected distance measure
     distance_measure = ('matusita', measures.distance_measures['matusita'])
 
-    graph = None
+    #graph = None
 
     strong_edge_weights = [12.0, 6.0, 3.0, 1.5, 0.75]
     weak_edge_weights = [3.0, 2.0, 1.0, 0.25, 0.1, 0.1]
@@ -77,20 +77,6 @@ class FeatureAnalyser:
     
     # Ranked list of ap values for each distance measure
     ap_list = None
-
-    # Progress indicator
-    progress_indicator = None
-    progress_max = 0
-
-
-    def __init__(self, corpus_reader, output_dir, mode):
-        self.corpus_reader = corpus_reader
-        self.output_dir = output_dir
-
-        self.mode = mode
-
-        self.progress_max = self.get_progress_max()
-
 
     def set_distance_measure(self, measure):
         self.distance_measure = (measure, measures.distance_measures[measure])
@@ -122,7 +108,6 @@ class FeatureAnalyser:
 
         print('Choosing best features...')
 
-        #self.task_label.text = 'Function words: Selecting features...'
         self.progress_indicator.set_label('[b]Function words:[/b]\nSelecting features...')
 
         # Feature extraction
@@ -314,25 +299,6 @@ class FeatureAnalyser:
         return feature_matrix
 
 
-    def precision(self, k, array):
-
-        s = 0
-        for i in range(k):
-            if array[i]:
-                s += 1
-
-        return s / k
-
-
-    def average_precision(self, array):
-
-        ap = 0
-        for i in range(len(array)):
-            ap += self.precision(i+1, array) * array[i]
-
-        return ap / len(array)
-
-
     def auto_select_distance_measure(self):
 
         self.progress_indicator.set_label('[b]Function words:[/b]\nSelecting distance measure...')
@@ -425,32 +391,6 @@ class FeatureAnalyser:
         a_sorted = sorted(a.items(), key=lambda x: x[1])
 
         return a_sorted
-
-
-
-    def add_edges(self, graph, label, ranking, weights):
-
-        # Add edges to first and two runner-ups
-        for i in range(len(weights)):
-            link_label = ranking[i][0]
-
-            # Create/increase in degree
-            if 'In' in graph.nodes[link_label]:
-                graph.nodes[link_label]['In'] += 1
-            else:
-                graph.nodes[link_label]['In'] = 1
-
-            if not graph.has_edge(label, link_label):
-                graph.add_edge(label, link_label)
-                graph[label][link_label]['weight'] = weights[i]
-
-                # Increase out degree only if this is a new edge
-                if 'Out' in graph.nodes[label]:
-                    graph.nodes[label]['Out'] += 1
-                else:
-                    graph.nodes[label]['Out'] = 1
-            else:
-                graph[label][link_label]['weight'] += weights[i]
 
 
     def make_graph(self, feature_matrix, text_labels, selected_features):

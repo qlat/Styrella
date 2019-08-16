@@ -12,20 +12,10 @@ from sklearn import preprocessing
 import seaborn as sns
 import xlsxwriter
 
+from base_analyzer import *
 import measures
 
-class NGramAnalyser:
-
-    # Keys: text file names
-    # Values: list of words
-    corpus_reader = None
-
-    output_dir = ''
-
-    # Possible values: auto, manual
-    mode = 'auto'
-
-    studied_text = None
+class NGramAnalyser(BaseAnalyzer):
 
     # The 'n' in 'n-gram'
     n = 4
@@ -39,8 +29,7 @@ class NGramAnalyser:
     mf_ngram_types = [50, 100, 200, 300, 400, 500, 1000]
 
     ap_matrix = None
-    choosen_index = None
-
+    chosen_index = None
 
     # Selected distance measure, tupel: (name, function)
     distance_measure = ('tanimoto', measures.distance_measures['tanimoto'])
@@ -49,23 +38,6 @@ class NGramAnalyser:
 
     strong_edge_weights = [15.0, 5.0, 1.0]
     weak_edge_weights = [0.1, 0.1, 0.1]
-
-    graph = None
-
-    # Progress indicator
-    progress_indicator = None
-
-    progress_max = 0
-
-
-    def __init__(self, corpus_reader, output_dir, mode):
-        self.corpus_reader = corpus_reader
-        self.output_dir = output_dir
-
-        self.mode = mode
-
-        self.progress_max = self.get_progress_max()
-
 
     def set_distance_measure(self, measure):
         self.distance_measure = (measure, measures.distance_measures[measure])
@@ -127,25 +99,6 @@ class NGramAnalyser:
         a_sorted = sorted(a.items(), key=lambda x: x[1])
 
         return a_sorted
-
-
-    def precision(self, k, array):
-
-        s = 0
-        for i in range(k):
-            if array[i]:
-                s += 1
-
-        return s / k
-
-
-    def average_precision(self, array):
-
-        ap = 0
-        for i in range(len(array)):
-            ap += self.precision(i+1, array) * array[i]
-
-        return ap / len(array)
 
 
     def auto_select_parameters(self):
@@ -236,16 +189,16 @@ class NGramAnalyser:
 
         # Find index of maximum value from 2D numpy array
 
-        self.choosen_index = np.unravel_index(matrix.argmax(), matrix.shape)
-        print('Largest index = '+str(self.choosen_index))
+        self.chosen_index = np.unravel_index(matrix.argmax(), matrix.shape)
+        print('Largest index = ' + str(self.chosen_index))
         print('=> Using parameters:')
-        print('Distance measure: '+str(measures_list[self.choosen_index[0]]))
-        print('N-Gram type: '+str(self.ngram_types[self.choosen_index[1]]))
-        print('Most frequent n-grams: '+str(self.mf_ngram_types[self.choosen_index[2]]))
+        print('Distance measure: ' + str(measures_list[self.chosen_index[0]]))
+        print('N-Gram type: ' + str(self.ngram_types[self.chosen_index[1]]))
+        print('Most frequent n-grams: ' + str(self.mf_ngram_types[self.chosen_index[2]]))
 
-        self.distance_measure = (measures_list[self.choosen_index[0]], measures.distance_measures[measures_list[self.choosen_index[0]]])
-        self.n = self.ngram_types[self.choosen_index[1]]
-        self.mf_ngrams = self.mf_ngram_types[self.choosen_index[2]]
+        self.distance_measure = (measures_list[self.chosen_index[0]], measures.distance_measures[measures_list[self.chosen_index[0]]])
+        self.n = self.ngram_types[self.chosen_index[1]]
+        self.mf_ngrams = self.mf_ngram_types[self.chosen_index[2]]
 
 
     def get_ngram_distance(self, a_ngrams, b_ngrams, mf_ngrams, measure):
@@ -276,30 +229,8 @@ class NGramAnalyser:
         return d
 
 
-    def add_edges(self, graph, label, ranking, weights):
-
-        # Add edges to first and two runner-ups
-        for i in range(len(weights)):
-            #link_label = labels[ranking[i][0]]
-            link_label = ranking[i][0]
-
-            # Create/increase in degree
-            if 'In' in graph.nodes[link_label]:
-                graph.nodes[link_label]['In'] += 1
-            else:
-                graph.nodes[link_label]['In'] = 1
-
-            if not graph.has_edge(label, link_label):
-                graph.add_edge(label, link_label, weight=weights[i])
-
-                # Increase out degree only if this is a new edge
-                if 'Out' in graph.nodes[label]:
-                    graph.nodes[label]['Out'] += 1
-                else:
-                    graph.nodes[label]['Out'] = 1
-            else:
-                graph[label][link_label]['weight'] += weights[i]
-
+    def write_values(self):
+        pass
 
     def make_graph(self):
 
@@ -307,8 +238,6 @@ class NGramAnalyser:
 
         # Filter selected features
         self.progress_indicator.set_label('[b]N-Grams:[/b]\nCreating graph...')
-
-        row_labels = [t for t in self.n_grams[self.n]]
 
         overall = len(self.n_grams[self.n]) + len(self.ngram_types) * len(self.n_grams[self.n]) * len(self.mf_ngram_types)
         n_passes = 0
@@ -409,11 +338,8 @@ class NGramAnalyser:
 
         self.progress_indicator.new_task(self.progress_max)
 
-
         if self.mode == 'auto':
-
             self.progress_indicator.set_label('[b]N-Grams:[/b]\nSelecting parameters...')
-
             self.auto_select_parameters()
 
 
@@ -538,12 +464,10 @@ class NGramAnalyser:
 
                 for k in range(self.ap_matrix.shape[2]):
 
-                    mf_ngrams = self.mf_ngram_types[k]
-
                     # This is the actual ap value
                     row.append(self.ap_matrix[i,j,k])
 
-                    if (i,j,k) == self.choosen_index:
+                    if (i,j,k) == self.chosen_index:
                         formats[k+1] = bold
 
                 # Write first col (no float)
@@ -606,7 +530,6 @@ class NGramAnalyser:
 
         print('Write results to >' + str(self.output_dir) + '<')
         self.progress_indicator.set_label('[b]N-Grams:[/b]\nWriting results...')
-
 
         # Write Excel file
         self.workbook = xlsxwriter.Workbook(self.output_dir / 'ngram_data.xlsx')
