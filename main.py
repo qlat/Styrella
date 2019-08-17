@@ -39,8 +39,6 @@ class ProgressIndicator:
         self.progress_bar.value = 0
         self.progress_bar.max = max
 
-        #print('Progress max: ' + str(max))
-
     @mainthread
     def set_label(self, label):
         self.label.text = label

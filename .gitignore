@@ -1,9 +1,10 @@
 __pycache__
 build
+dist
+files
 lib
 pynsist_pkgs
 pynsist_whls
-installer.cfg
 styrella.ico
 main.spec
 output
