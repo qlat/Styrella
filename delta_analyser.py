@@ -554,7 +554,6 @@ class DeltaAnalyser(BaseAnalyzer):
             n_row = 0
             n_col += 2
 
-
     def write_pca(self):
 
         print('Writing PCA...')

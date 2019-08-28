@@ -1,3 +1,7 @@
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
 from kivy.config import Config
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
@@ -224,6 +228,10 @@ class StyrellaApp(App):
             # Finished => collect settings
             self.start_manual()
 
+        if current == 'finished':
+            App.get_running_app().stop()
+
+
     def do_back(self):
 
         current = self.root.ids.screen_manager.current
@@ -280,6 +288,10 @@ class StyrellaApp(App):
 
     def start(self):
 
+        # Disable back button
+        self.root.ids.back_button.color = (.9, .9, .9, 1)
+        self.root.ids.back_button.diabled = True
+
         # Make dir with current date and timestamp
         now = datetime.datetime.now()
         timestamp_dir = self.output_dir / (now.strftime('%Y%m%d_%H%M%S') + '_data')
@@ -297,7 +309,13 @@ class StyrellaApp(App):
             self.dana.analyse()
             self.dana.write_results(timestamp_dir)
 
+        # Turn next button into exit button
+        self.root.ids.next_button.color = (.23, .23, .23, 1)
+        self.root.ids.next_button.diabled = False
+        self.root.ids.next_button.text = 'Exit'
+
         self.root.ids.screen_manager.current = 'finished'
+
 
     def collect_settings(self):
 
