@@ -26,14 +26,6 @@ import measures
 
 class FeatureAnalyser(BaseAnalyzer):
 
-    def auto_select_parameters(self):
-        # TODO
-        pass
-
-    def write_values(self):
-        # TODO
-        pass
-
     feature_choice = {
         'alius': False,
         'antequam': False,
@@ -68,8 +60,6 @@ class FeatureAnalyser(BaseAnalyzer):
     # Selected distance measure
     distance_measure = ('matusita', measures.distance_measures['matusita'])
 
-    #graph = None
-
     strong_edge_weights = [12.0, 6.0, 3.0, 1.5, 0.75]
     weak_edge_weights = [3.0, 2.0, 1.0, 0.25, 0.1, 0.1]
 
@@ -80,7 +70,6 @@ class FeatureAnalyser(BaseAnalyzer):
 
     def set_distance_measure(self, measure):
         self.distance_measure = (measure, measures.distance_measures[measure])
-
 
     def get_progress_max(self):
 
@@ -104,7 +93,7 @@ class FeatureAnalyser(BaseAnalyzer):
         return progress_max
 
 
-    def auto_select_features(self, n=7):
+    def auto_select_parameters(self):
 
         print('Choosing best features...')
 
@@ -133,7 +122,8 @@ class FeatureAnalyser(BaseAnalyzer):
 
     def get_feature_count(self, word_list, feature):
 
-        # Source: https://stackoverflow.com/questions/26663371/python-intersection-of-two-lists-keeping-duplicates
+        # Source:
+        # https://stackoverflow.com/questions/26663371/python-intersection-of-two-lists-keeping-duplicates
         items = set(feature)
         found = [i for i in word_list if i in items]
 
@@ -321,10 +311,11 @@ class FeatureAnalyser(BaseAnalyzer):
                 self.distance_measure = (measure, measures.distance_measures[measure])
 
                 # Get Ranking of texts for selected distance measure
-                ranking = self.get_ranking(i, matrix, self.distance_measure[1])
+                ranking = self.get_ranking(i, texts, matrix, self.distance_measure[1])
 
                 # Link is relevant if both chunks come from same text
-                relevant = texts[i][:4] == texts[ranking[0][0]][:4]
+                #relevant = texts[i][:4] == texts[ranking[0][0]][:4]
+                relevant = texts[i][:4] == ranking[0][0][:4]
 
                 links[i] = ranking[0] + (relevant,)
 
@@ -389,6 +380,7 @@ class FeatureAnalyser(BaseAnalyzer):
                 a[texts[row]] = measure(matrix[n_row, :], matrix[row, :])
 
         a_sorted = sorted(a.items(), key=lambda x: x[1])
+        print(a_sorted)
 
         return a_sorted
 
@@ -430,7 +422,6 @@ class FeatureAnalyser(BaseAnalyzer):
 
         return G
 
-
     def analyse(self):
 
         # Get values for all features
@@ -447,7 +438,7 @@ class FeatureAnalyser(BaseAnalyzer):
                 self.feature_choice[key] = False
 
             # Auto-select features
-            self.auto_select_features()
+            self.auto_select_parameters()
 
             # Auto-select distance measure
             self.auto_select_distance_measure()
@@ -472,7 +463,7 @@ class FeatureAnalyser(BaseAnalyzer):
         self.G = self.make_graph(self.feature_matrix, [t for t in self.corpus_reader.corpus], [self.feature_choice[f] for f in self.feature_choice])
 
 
-    def write_features(self):
+    def write_values(self):
 
         print('Writing feature values...')
 
@@ -631,7 +622,7 @@ class FeatureAnalyser(BaseAnalyzer):
         self.workbook = xlsxwriter.Workbook(self.output_dir / 'function_words_data.xlsx')
 
         # Write feature values to Excel file
-        self.write_features()
+        self.write_values()
 
         # Write distances to Excel file
         self.write_distances()

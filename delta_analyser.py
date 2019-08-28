@@ -393,14 +393,13 @@ class DeltaAnalyser(BaseAnalyzer):
         n_culling_types = len(self.culling_types)
 
         matrix = np.zeros(shape=(n_measures, n_mfw, n_culling_types))
-        measures = list(measures.delta_measures.keys())
-        print(measures)
+        measures_list = list(measures.delta_measures.keys())
 
         self.progress_indicator.set_label('[b]Burrow\'s Delta:[/b]\nCalculating AP values...')
         n_passes = 0
         for measure in measures.delta_measures:
 
-            i = measures.index(measure)
+            i = measures_list.index(measure)
 
             for mfw_type in self.mfw_types:
 
@@ -459,13 +458,13 @@ class DeltaAnalyser(BaseAnalyzer):
         print(matrix)
 
         print('=> Choose parameters:')
-        print('Delta measure: ' + str(measures[choosen_index[0]]))
+        print('Delta measure: ' + str(measures_list[choosen_index[0]]))
         print('MFWs: ' + str(self.mfw_types[choosen_index[1]]))
         print('Culling at: ' + str(self.culling_types[choosen_index[2]]))
 
         self.selected_index = choosen_index
 
-        self.measure = (measures[choosen_index[0]], measures.delta_measures[measures[choosen_index[0]]])
+        self.measure = (measures_list[choosen_index[0]], measures.delta_measures[measures_list[choosen_index[0]]])
         self.mfw = self.mfw_types[choosen_index[1]]
         self.cull = self.culling_types[choosen_index[2]]
 

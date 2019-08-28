@@ -2,10 +2,6 @@ __pycache__
 build
 dist
 files
-lib
-pynsist_pkgs
-pynsist_whls
 styrella.ico
 main.spec
 output
-docs

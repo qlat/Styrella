@@ -40,7 +40,9 @@ class BaseAnalyzer:
     def add_edges(self, graph, label, ranking, weights):
 
         # Add edges to first and two runner-ups
-        for i in range(len(weights)):
+        # Security check if there are not enough texts
+        r_min = min(len(weights), len(ranking))
+        for i in range(r_min):
             link_label = ranking[i][0]
 
             # Create/increase in degree
