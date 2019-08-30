@@ -384,7 +384,7 @@ class DeltaAnalyser(BaseAnalyzer):
         print('Auto-selecting parameters...')
 
         # Temporary corpus for testing
-        self.progress_indicator.set_label('[b]Burrow\'s Delta:[/b]\nPreparing test corpus...')
+        self.progress_indicator.set_label('[b]Burrows\'s Delta:[/b]\nPreparing test corpus...')
         test_word_freqs = self.get_texts_rel_freqs(self.corpus_reader.test_corpus)
         test_mfw_corpus = self.get_mfw_in_corpus(self.corpus_reader.test_corpus)
 
@@ -395,7 +395,7 @@ class DeltaAnalyser(BaseAnalyzer):
         matrix = np.zeros(shape=(n_measures, n_mfw, n_culling_types))
         measures_list = list(measures.delta_measures.keys())
 
-        self.progress_indicator.set_label('[b]Burrow\'s Delta:[/b]\nCalculating AP values...')
+        self.progress_indicator.set_label('[b]Burrows\'s Delta:[/b]\nCalculating AP values...')
         n_passes = 0
         for measure in measures.delta_measures:
 
@@ -484,14 +484,14 @@ class DeltaAnalyser(BaseAnalyzer):
         print('Culling: ' + str(self.cull))
 
         # Get the most frequent words in the whole corpus
-        self.progress_indicator.set_label('[b]Burrow\'s Delta:[/b]\nGetting most frequent words...')
+        self.progress_indicator.set_label('[b]Burrows\'s Delta:[/b]\nGetting most frequent words...')
         self.corpus_mfw = self.get_mfw_in_corpus(self.corpus_reader.corpus)
 
         # Calculate the relative word frequencies for each text
-        self.progress_indicator.set_label('[b]Burrow\'s Delta:[/b]\nGetting relative frequencies...')
+        self.progress_indicator.set_label('[b]Burrows\'s Delta:[/b]\nGetting relative frequencies...')
         self.texts_rel_freqs = self.get_texts_rel_freqs(self.corpus_reader.corpus)
 
-        self.progress_indicator.set_label('[b]Burrow\'s Delta:[/b]\nCreating graph...')
+        self.progress_indicator.set_label('[b]Burrows\'s Delta:[/b]\nCreating graph...')
         self.graph = self.make_graph()
 
 
@@ -635,7 +635,7 @@ class DeltaAnalyser(BaseAnalyzer):
 
         print('Write results to >' + str(self.output_dir) + '<')
 
-        self.progress_indicator.set_label('[b]Burrow\'s Delta:[/b]\nWriting results...')
+        self.progress_indicator.set_label('[b]Burrows\'s Delta:[/b]\nWriting results...')
 
         # Write Excel file
         self.workbook = xlsxwriter.Workbook(self.output_dir / 'delta_data.xlsx')

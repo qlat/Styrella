@@ -143,7 +143,6 @@ BoxLayout:
                 BoxLayout:
                     orientation: 'vertical'
 
-
                     # Top padding
                     Widget:
                         size_hint_y: None
@@ -172,7 +171,7 @@ BoxLayout:
                         background_color: .85, .85, .85, 1
                         color: .23, .23, .23, 1
                         background_down: '#B4B4B4'
-                        on_press: app.do_auto()
+                        on_press: app.auto_btn_clicked()
 
                     Widget:
                         size_hint_y: None
@@ -189,7 +188,7 @@ BoxLayout:
                         background_color: .85, .85, .85, 1
                         color: .23, .23, .23, 1
                         background_down: '#B4B4B4'
-                        on_press: app.do_manual()
+                        on_press: app.manual_btn_clicked()
 
                     Widget:
 

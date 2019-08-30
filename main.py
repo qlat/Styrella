@@ -1,6 +1,5 @@
 import matplotlib
 matplotlib.use('Agg')
-import matplotlib.pyplot as plt
 
 from kivy.config import Config
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
@@ -27,7 +26,6 @@ from ngram_analyser import *
 
 
 class ProgressIndicator:
-
     progress_bar = None
     overall_progress_bar = None
     label = None
@@ -58,7 +56,6 @@ class ProgressIndicator:
 
 
 class StyrellaApp(App):
-
     ana = None
     nana = None
     dana = None
@@ -88,14 +85,14 @@ class StyrellaApp(App):
 
         Tk().withdraw()
         dirname = filedialog.askdirectory(initialdir=os.getcwd())
-        print('Selected: '+dirname)
+        print('Selected: ' + dirname)
         self.root.ids.corpus_dir_input.text = dirname
 
     def do_choose_output_dir(self):
 
         Tk().withdraw()
         dirname = filedialog.askdirectory(initialdir=os.getcwd())
-        print('Selected: '+dirname)
+        print('Selected: ' + dirname)
         self.root.ids.output_dir_input.text = dirname
 
     def do_next(self):
@@ -135,22 +132,8 @@ class StyrellaApp(App):
                     messagebox.showerror("Error", "Output directory is not readable!")
 
             if not problems:
-
-                self.root.ids.screen_manager.current = 'choose_mode'
-
-                # Disable next button
-                self.root.ids.next_button.color = (.9, .9, .9, 1)
-                self.root.ids.next_button.diabled = True
-
-                # Enable back button
-                self.root.ids.back_button.color = (.23, .23, .23, 1)
-                self.root.ids.back_button.diabled = False
-
-        if current == 'choose_features':
-            self.root.ids.screen_manager.current = 'choose_distance_measures'
-
-        if current == 'choose_distance_measures':
-            self.root.ids.screen_manager.current = 'further_options'
+                self.root.ids.screen_manager.current = 'choose_methods'
+                self.enable_back_btn(True)
 
         if current == 'choose_methods':
 
@@ -169,18 +152,14 @@ class StyrellaApp(App):
             else:
                 self.do_delta = False
 
-            print('Do function words: '+str(self.do_function_words))
+            print('Do function words: ' + str(self.do_function_words))
             print('Do ngrams: ' + str(self.do_ngrams))
             print('Do delta: ' + str(self.do_delta))
 
-            if self.do_function_words:
-                self.root.ids.screen_manager.current = 'function_words_choose_features'
-            else:
-                if self.do_ngrams:
-                    self.root.ids.screen_manager.current = 'ngrams_choose_n'
-                else:
-                    if self.do_delta:
-                        self.root.ids.screen_manager.current = 'delta_choose_most_frequent_words'
+            # Disable next button
+            self.enable_next_btn(False)
+
+            self.root.ids.screen_manager.current = 'choose_mode'
 
         # Function words ------------------------------------------------------
         if current == 'function_words_choose_features':
@@ -195,8 +174,7 @@ class StyrellaApp(App):
                 if self.do_delta:
                     self.root.ids.screen_manager.current = 'delta_choose_most_frequent_words'
                 else:
-                    self.start_manual()
-
+                    self.prepare_manual()
 
         # Character N-Grams ---------------------------------------------------
         if current == 'ngrams_choose_n':
@@ -206,52 +184,48 @@ class StyrellaApp(App):
             self.root.ids.screen_manager.current = 'ngrams_choose_distance_measure'
 
         if current == 'ngrams_choose_distance_measure':
-
             # No more options for n-grams. Check other methods.
             if self.do_delta:
                 self.root.ids.screen_manager.current = 'delta_choose_most_frequent_words'
             else:
-                self.start_manual()
-
+                self.prepare_manual()
 
         # Burrows' Delta ------------------------------------------------------
         if current == 'delta_choose_most_frequent_words':
+            # Workaround/bugfix: Setting in kv file has no effect
+            self.root.ids.delta_cull_0.active = True
             self.root.ids.screen_manager.current = 'delta_choose_culling_factor'
-
 
         if current == 'delta_choose_culling_factor':
             self.root.ids.screen_manager.current = 'delta_choose_delta_measure'
 
-
         if current == 'delta_choose_delta_measure':
-
             # Finished => collect settings
-            self.start_manual()
+            self.prepare_manual()
 
         if current == 'finished':
             App.get_running_app().stop()
-
 
     def do_back(self):
 
         current = self.root.ids.screen_manager.current
 
-        if current == 'choose_mode':
+        if current == 'choose_methods':
+            # Disable back button
+            self.enable_back_btn(False)
+
             self.root.ids.screen_manager.current = 'choose_directories'
 
-            # Disable back button
-            self.root.ids.back_button.color = (.9, .9, .9, 1)
-            self.root.ids.back_button.diabled = True
+        if current == 'choose_mode':
 
             # Enable next button
-            self.root.ids.next_button.color = (.23, .23, .23, 1)
-            self.root.ids.next_button.diabled = False
+            self.enable_next_btn(True)
 
-        if current == 'choose_methods':
-            self.root.ids.screen_manager.current = 'choose_mode'
+            self.root.ids.screen_manager.current = 'choose_methods'
 
         if current == 'function_words_choose_features':
-            self.root.ids.screen_manager.current = 'choose_methods'
+            self.enable_next_btn(False)
+            self.root.ids.screen_manager.current = 'choose_mode'
 
         if current == 'function_words_choose_distance_measure':
             self.root.ids.screen_manager.current = 'function_words_choose_features'
@@ -261,7 +235,8 @@ class StyrellaApp(App):
             if self.do_function_words:
                 self.root.ids.screen_manager.current = 'function_words_choose_distance_measure'
             else:
-                self.root.ids.screen_manager.current = 'choose_methods'
+                self.enable_next_btn(False)
+                self.root.ids.screen_manager.current = 'choose_mode'
 
         if current == 'ngrams_choose_most_common_ngrams':
             self.root.ids.screen_manager.current = 'ngrams_choose_n'
@@ -278,7 +253,8 @@ class StyrellaApp(App):
                 if self.do_function_words:
                     self.root.ids.screen_manager.current = 'function_words_choose_distance_measure'
                 else:
-                    self.root.ids.screen_manager.current = 'choose_methods'
+                    self.enable_next_btn(False)
+                    self.root.ids.screen_manager.current = 'choose_mode'
 
         if current == 'delta_choose_culling_factor':
             self.root.ids.screen_manager.current = 'delta_choose_most_frequent_words'
@@ -286,36 +262,31 @@ class StyrellaApp(App):
         if current == 'delta_choose_delta_measure':
             self.root.ids.screen_manager.current = 'delta_choose_culling_factor'
 
-    def start(self):
-
-        # Disable back button
-        self.root.ids.back_button.color = (.9, .9, .9, 1)
-        self.root.ids.back_button.diabled = True
+    def start_calculations(self):
 
         # Make dir with current date and timestamp
         now = datetime.datetime.now()
         timestamp_dir = self.output_dir / (now.strftime('%Y%m%d_%H%M%S') + '_data')
         os.mkdir(timestamp_dir)
 
-        if self.auto_mode or self.do_function_words:
+        if self.do_function_words:
             self.ana.analyse()
             self.ana.write_results(timestamp_dir)
 
-        if self.auto_mode or self.do_ngrams:
+        if self.do_ngrams:
             self.nana.analyse()
             self.nana.write_results(timestamp_dir)
 
-        if self.auto_mode or self.do_delta:
+        if self.do_delta:
             self.dana.analyse()
             self.dana.write_results(timestamp_dir)
 
         # Turn next button into exit button
         self.root.ids.next_button.color = (.23, .23, .23, 1)
-        self.root.ids.next_button.diabled = False
+        self.root.ids.next_button.disabled = False
         self.root.ids.next_button.text = 'Exit'
 
         self.root.ids.screen_manager.current = 'finished'
-
 
     def collect_settings(self):
 
@@ -387,7 +358,6 @@ class StyrellaApp(App):
             if self.root.ids.checkbox_ut.active:
                 self.ana.feature_choice['ut'] = True
 
-
             if self.root.ids.function_words_square_euclidean.active:
                 self.ana.set_distance_measure('square_euclidean')
 
@@ -449,7 +419,6 @@ class StyrellaApp(App):
             if self.root.ids.checkbox_10grams.active:
                 self.nana.n = 10
 
-
             if self.root.ids.checkbox_ngrams_50.active:
                 self.nana.mf_ngrams = 50
 
@@ -470,7 +439,6 @@ class StyrellaApp(App):
 
             if self.root.ids.checkbox_ngrams_1000.active:
                 self.nana.mf_ngrams = 1000
-
 
             if self.root.ids.ngrams_square_euclidean.active:
                 self.nana.set_distance_measure('square_euclidean')
@@ -498,7 +466,8 @@ class StyrellaApp(App):
 
             print()
             print('Settings for character n-grams:')
-            print(str(self.nana.mf_ngrams)+' most common ' + str(self.nana.n) + '-grams, distance measure: '+self.nana.distance_measure[0])
+            print(str(self.nana.mf_ngrams) + ' most common ' + str(self.nana.n) + '-grams, distance measure: ' +
+                  self.nana.distance_measure[0])
 
         # Burrows' Delta ------------------------------------------------------
         if self.do_delta:
@@ -544,7 +513,6 @@ class StyrellaApp(App):
             if self.root.ids.delta_mfw_1000.active:
                 self.dana.mfw = 1000
 
-
             if self.root.ids.delta_cull_0.active:
                 self.dana.cull = 0
 
@@ -563,7 +531,6 @@ class StyrellaApp(App):
             if self.root.ids.delta_cull_100.active:
                 self.dana.cull = 1
 
-
             if self.root.ids.delta_classic.active:
                 self.dana.set_delta_measure('delta')
 
@@ -576,23 +543,22 @@ class StyrellaApp(App):
             if self.root.ids.delta_argamons.active:
                 self.dana.set_delta_measure('argamons')
 
-
             print()
             print('Settings for Burrows\' Delta:')
-            print('mfw: '+str(self.dana.mfw)+', cull at '+str(self.dana.cull*100)+'%, delta mesaure: '+self.dana.measure[0])
+            print('mfw: ' + str(self.dana.mfw) + ', cull at ' + str(self.dana.cull * 100) + '%, delta mesaure: ' +
+                  self.dana.measure[0])
 
-    def start_manual(self):
+    def prepare_manual(self):
 
         print('Start manual.')
-
-        self.root.ids.screen_manager.current = 'progress'
 
         # Create corpus reader
         self.corpus_reader = CorpusReader(self.corpus_dir)
 
         self.collect_settings()
 
-        progress_indicator = ProgressIndicator(self.root.ids.task_progress, self.root.ids.overall_progress, self.root.ids.task_label)
+        progress_indicator = ProgressIndicator(self.root.ids.task_progress, self.root.ids.overall_progress,
+                                               self.root.ids.task_label)
         overall_progress_max = 0
         if self.do_function_words:
             self.ana.progress_indicator = progress_indicator
@@ -606,11 +572,16 @@ class StyrellaApp(App):
 
         progress_indicator.set_overall_progress_max(overall_progress_max)
 
-        task = threading.Thread(target=self.start)
+        # Disable back button
+        self.enable_back_btn(False)
+
+        self.root.ids.screen_manager.current = 'progress'
+
+        task = threading.Thread(target=self.start_calculations)
         task.daemon = True
         task.start()
 
-    def do_auto(self, *args):
+    def auto_btn_clicked(self, *args):
 
         print('Do auto mode.')
         self.auto_mode = True
@@ -618,41 +589,72 @@ class StyrellaApp(App):
         # Create corpus reader
         self.corpus_reader = CorpusReader(self.corpus_dir)
 
-        progress_indicator = ProgressIndicator(self.root.ids.task_progress, self.root.ids.overall_progress, self.root.ids.task_label)
+        progress_indicator = ProgressIndicator(self.root.ids.task_progress, self.root.ids.overall_progress,
+                                               self.root.ids.task_label)
         overall_progress_max = 0
 
         # Function words
-        self.ana = FeatureAnalyser(self.corpus_reader, self.output_dir, 'auto')
-        self.ana.progress_indicator = progress_indicator
-        overall_progress_max += self.ana.progress_max
+        if self.do_function_words:
+            self.ana = FeatureAnalyser(self.corpus_reader, self.output_dir, 'auto')
+            self.ana.progress_indicator = progress_indicator
+            overall_progress_max += self.ana.progress_max
 
         # Character n-grams
-        self.nana = NGramAnalyser(self.corpus_reader, self.output_dir, 'auto')
-        self.nana.progress_indicator = progress_indicator
-        overall_progress_max += self.nana.progress_max
+        if self.do_ngrams:
+            self.nana = NGramAnalyser(self.corpus_reader, self.output_dir, 'auto')
+            self.nana.progress_indicator = progress_indicator
+            overall_progress_max += self.nana.progress_max
 
         # Burrows' Delta
-        self.dana = DeltaAnalyser(self.corpus_reader, self.output_dir, 'auto')
-        self.dana.progress_indicator = progress_indicator
-        overall_progress_max += self.dana.progress_max
+        if self.do_delta:
+            self.dana = DeltaAnalyser(self.corpus_reader, self.output_dir, 'auto')
+            self.dana.progress_indicator = progress_indicator
+            overall_progress_max += self.dana.progress_max
 
         progress_indicator.set_overall_progress_max(overall_progress_max)
 
+        # Disable back button
+        self.enable_back_btn(False)
+
         self.root.ids.screen_manager.current = 'progress'
 
-        task = threading.Thread(target=self.start)
+        task = threading.Thread(target=self.start_calculations)
         task.daemon = True
         task.start()
 
-    def do_manual(self, *args):
+    def manual_btn_clicked(self, *args):
 
         print('Do manual mode.')
         self.auto_mode = False
 
-        self.root.ids.screen_manager.current = 'choose_methods'
+        self.enable_next_btn(True)
 
-        self.root.ids.next_button.color = (.23, .23, .23, 1)
-        self.root.ids.next_button.diabled = False
+        if self.do_function_words:
+            self.root.ids.screen_manager.current = 'function_words_choose_features'
+        else:
+            if self.do_ngrams:
+                self.root.ids.screen_manager.current = 'ngrams_choose_n'
+            else:
+                if self.do_delta:
+                    self.root.ids.screen_manager.current = 'delta_choose_most_frequent_words'
+
+    def enable_back_btn(self, enable):
+
+        self.root.ids.back_button.disabled = not enable
+
+        if enable:
+            self.root.ids.back_button.color = (.23, .23, .23, 1)
+        else:
+            self.root.ids.back_button.color = (.9, .9, .9, 1)
+
+    def enable_next_btn(self, enable):
+
+        self.root.ids.next_button.disabled = not enable
+
+        if enable:
+            self.root.ids.next_button.color = (.23, .23, .23, 1)
+        else:
+            self.root.ids.next_button.color = (.9, .9, .9, 1)
 
 
 def main():
