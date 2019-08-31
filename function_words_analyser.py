@@ -380,7 +380,7 @@ class FeatureAnalyser(BaseAnalyzer):
                 a[texts[row]] = measure(matrix[n_row, :], matrix[row, :])
 
         a_sorted = sorted(a.items(), key=lambda x: x[1])
-        print(a_sorted)
+        #print(a_sorted)
 
         return a_sorted
 

@@ -1,3 +1,4 @@
+import chardet
 import os
 from pathlib import Path
 from re import findall
@@ -14,11 +15,21 @@ class CorpusReader:
     # Number of chunks to split each text into for testing purposes
     n_test_chunks = 3
 
+    def get_encoding(self, filename):
+
+        f = open(filename, 'rb')
+        guess = chardet.detect(f.read())
+
+        return guess['encoding']
+
     def read_file(self, name):
 
         result = []
 
-        f = open(name, 'r', encoding='utf8')
+        encoding = self.get_encoding(name)
+        print('Open >'+name.name+'< with encoding >'+encoding+'<')
+
+        f = open(name, 'r', encoding=encoding)
         for l in f:
 
             # Convert to lower-case
