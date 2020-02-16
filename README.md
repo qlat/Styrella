@@ -10,7 +10,7 @@
 
 ### Running from source
 
-*Styrella* was with Python Python 3.6 and 3.7 on Windows and current versions of Ubuntu (18.10, 19.04). To run *Styrella* from source, clone the repository and install the required dependencies:
+*Styrella* was tested with Python Python 3.6 and 3.7 on Windows and current versions of Ubuntu (18.10, 19.04). To run *Styrella* from source, clone the repository and install the required dependencies:
 
 `$ git clone https://github.com/qlat/Styrella.git`
 
